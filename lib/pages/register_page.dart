@@ -9,6 +9,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   String? menuItem = 'Driver';
+  final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -36,128 +38,181 @@ class _RegisterPageState extends State<RegisterPage> {
         body: Padding(
           padding: EdgeInsets.all(25.0),
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Name*:'),
-                SizedBox(height: 5.0),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Name*:'),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Name is required';
+                      }
+                      return null;
+                    },
                   ),
-                  onEditingComplete: () {
-                    setState(() {});
-                  },
-                ),
-                SizedBox(height: 15.0),
-                Text('Surname*:'),
-                SizedBox(height: 5.0),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  SizedBox(height: 15.0),
+                  Text('Surname*:'),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Surname is required';
+                      }
+                      return null;
+                    },
                   ),
-                  onEditingComplete: () {
-                    setState(() {});
-                  },
-                ),
-                SizedBox(height: 15.0),
-                Text('Company*:'),
-                SizedBox(height: 5.0),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  SizedBox(height: 15.0),
+                  Text('Company*:'),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Company is required';
+                      }
+                      return null;
+                    },
                   ),
-                  onEditingComplete: () {
-                    setState(() {});
-                  },
-                ),
-                SizedBox(height: 15.0),
-                Text('Role*:'),
-                SizedBox(height: 5.0),
-                DropdownButtonFormField<String>(
-                  value: menuItem,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  SizedBox(height: 15.0),
+                  Text('Role*:'),
+                  SizedBox(height: 5.0),
+                  DropdownButtonFormField<String>(
+                    value: menuItem,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    items: [
+                      DropdownMenuItem(value: 'Driver', child: Text('Driver')),
+                      DropdownMenuItem(
+                        value: 'Operator',
+                        child: Text('Operator'),
+                      ),
+                    ],
+                    onChanged: (String? value) {
+                      setState(() {
+                        menuItem = value;
+                      });
+                    },
                   ),
-                  items: [
-                    DropdownMenuItem(value: 'Driver', child: Text('Driver')),
-                    DropdownMenuItem(
-                      value: 'Operator',
-                      child: Text('Operator'),
+                  SizedBox(height: 15.0),
+                  Text('Phone number*:'),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
-                  ],
-                  onChanged: (String? value) {
-                    setState(() {
-                      menuItem = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 15.0),
-                Text('Phone number*:'),
-                SizedBox(height: 5.0),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Phone number is required';
+                      }
+                      //Check if phone number is valid
+                      final phoneRegex = RegExp(r'^\+?[0-9]{7,15}$');
+                      if(!phoneRegex.hasMatch(value)){
+                        return 'Invalid phone number';
+                      }
+                      return null;
+                    },
                   ),
-                  onEditingComplete: () {
-                    setState(() {});
-                  },
-                ),
-                SizedBox(height: 15.0),
-                Text('Email*:'),
-                SizedBox(height: 5.0),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  SizedBox(height: 15.0),
+                  Text('Email*:'),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email is required';
+                      }
+                      //Check if email is valid
+                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                      if(!emailRegex.hasMatch(value)){
+                        return 'Invalid email';
+                      }
+                      return null;
+                    },
                   ),
-                  onEditingComplete: () {
-                    setState(() {});
-                  },
-                ),
-                SizedBox(height: 15.0),
-                Text('Password*:'),
-                SizedBox(height: 5.0),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  SizedBox(height: 15.0),
+                  Text('Password*:'),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    onEditingComplete: () {
+                      setState(() {});
+                    },
+                    //TODO: Continue pw validation
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password is required';
+                      }
+                      return null;
+                    },
                   ),
-                  onEditingComplete: () {
-                    setState(() {});
-                  },
-                ),
-                SizedBox(height: 45.0),
-                FilledButton(
-                  onPressed: () {
-                    //TODO: Register functionality
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF659bad),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 130.0,
-                      vertical: 16.0,
+                  SizedBox(height: 45.0),
+                  FilledButton(
+                    onPressed: () {
+                      //Check if fields are valid
+                      if (_formKey.currentState!.validate()) {
+                        //TODO: Register functionality
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF659bad),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 130.0,
+                        vertical: 16.0,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(10.0),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(10.0),
-                    ),
+                    child: Text('Submit'),
                   ),
-                  child: Text('Submit'),
-                ),
-                SizedBox(height: 45.0),
-              ],
+                  SizedBox(height: 45.0),
+                ],
+              ),
             ),
           ),
         ),
