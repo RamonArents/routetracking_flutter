@@ -139,8 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         return 'Phone number is required';
                       }
                       //Check if phone number is valid
-                      final phoneRegex = RegExp(r'^\+?[0-9]{7,15}$');
-                      if(!phoneRegex.hasMatch(value)){
+                      if (!RegExp(r'^\+?[0-9]{7,15}$').hasMatch(value)) {
                         return 'Invalid phone number';
                       }
                       return null;
@@ -163,8 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         return 'Email is required';
                       }
                       //Check if email is valid
-                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                      if(!emailRegex.hasMatch(value)){
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                         return 'Invalid email';
                       }
                       return null;
@@ -178,14 +176,38 @@ class _RegisterPageState extends State<RegisterPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
                     ),
+                    obscureText: _obscurePassword,
                     onEditingComplete: () {
                       setState(() {});
                     },
-                    //TODO: Continue pw validation
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Password is required';
+                      }
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters long';
+                      }
+                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                        return 'Must contain at least one uppercase letter';
+                      }
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return 'Must contain at least one number';
+                      }
+                      if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                        return 'Must contain at least one special character';
                       }
                       return null;
                     },
