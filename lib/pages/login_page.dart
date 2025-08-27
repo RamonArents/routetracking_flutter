@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:routetracking_flutter/data/notifiers.dart';
 import 'package:routetracking_flutter/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,9 +14,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF659bad),
           title: Text(
@@ -27,6 +26,19 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                isDarkModeNotifier.value = !isDarkModeNotifier.value;
+              },
+              icon: ValueListenableBuilder(
+                valueListenable: isDarkModeNotifier,
+                builder: (context, isDarkMode, child) {
+                  return isDarkMode ? Icon(Icons.dark_mode) : Icon(Icons.light_mode);
+                },
+              ),
+            ),
+          ],
         ),
         body: Padding(
           padding: EdgeInsets.all(25.0),
@@ -77,10 +89,14 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //TODO: Add dark mode
-                      Text(
-                        'No account? ',
-                        style: TextStyle(color: Colors.black),
+                      ValueListenableBuilder(
+                        valueListenable: isDarkModeNotifier,
+                        builder: (context, isDarkMode, child) {
+                          return Text(
+                            'No account? ',
+                            style: TextStyle(color: isDarkMode ? Colors.black : Colors.white),
+                          );
+                        }
                       ),
                       Builder(
                         builder: (context) => InkWell(
@@ -130,7 +146,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
