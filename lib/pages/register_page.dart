@@ -1,5 +1,47 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:routetracking_flutter/data/notifiers.dart';
+import 'package:http/http.dart' as http;
+
+Future<String?> registerUser(
+  String name,
+  String surname,
+  String company,
+  String selectedRole,
+  String phonenumber,
+  String email,
+  String passwd,
+  BuildContext context,
+) async {
+  //TODO: Create .env file
+  final url = Uri.parse('http://:4000/adduser');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "name": name,
+        "surname": surname,
+        "company": company,
+        "selectedRole": selectedRole,
+        "email": email,
+        "phonenumber": phonenumber,
+        "passwd": passwd,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return "Registraton successful";
+    } else {
+      final body = jsonDecode(response.body);
+      return body["error"] ?? "Unknown error";
+    }
+  } catch (e) {
+    return "Network or server error";
+  }
+}
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,11 +55,57 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
 
+  //Controllers
+  final _nameController = TextEditingController();
+  final _surnameController = TextEditingController();
+  final _companyController = TextEditingController();
+  final _phonenumberController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _surnameController.dispose();
+    _companyController.dispose();
+    _phonenumberController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void submitForm() async {
+    //Check if fields are valid
+    if (_formKey.currentState!.validate()) {
+      final errorMsg = await registerUser(
+        _nameController.text.trim(),
+        _surnameController.text.trim(),
+        _companyController.text.trim(),
+        menuItem!, //Role
+        _phonenumberController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        context,
+      );
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Registration successful!"),
+          backgroundColor: errorMsg == null ? Colors.green : Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: isDarkModeNotifier,
       builder: (context, isDarkMode, child) {
+        //TODO: Convert to scaffold to see if the snackbar works
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -71,6 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text('Name*:'),
                       SizedBox(height: 5.0),
                       TextFormField(
+                        controller: _nameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -90,6 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text('Surname*:'),
                       SizedBox(height: 5.0),
                       TextFormField(
+                        controller: _surnameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -109,6 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text('Company*:'),
                       SizedBox(height: 5.0),
                       TextFormField(
+                        controller: _companyController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -154,6 +245,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text('Phone number*:'),
                       SizedBox(height: 5.0),
                       TextFormField(
+                        controller: _phonenumberController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -177,6 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text('Email*:'),
                       SizedBox(height: 5.0),
                       TextFormField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -200,6 +293,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text('Password*:'),
                       SizedBox(height: 5.0),
                       TextFormField(
+                        controller: _passwordController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -245,10 +339,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       SizedBox(height: 45.0),
                       FilledButton(
                         onPressed: () {
-                          //Check if fields are valid
-                          if (_formKey.currentState!.validate()) {
-                            //TODO: Register functionality
-                          }
+                          submitForm();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF659bad),
