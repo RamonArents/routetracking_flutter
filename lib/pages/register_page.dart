@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:routetracking_flutter/data/notifiers.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,8 +15,8 @@ Future<String?> registerUser(
   String passwd,
   BuildContext context,
 ) async {
-  //TODO: Create .env file
-  final url = Uri.parse('http://:4000/adduser');
+  final host = dotenv.env['HOST'];
+  final url = Uri.parse('$host:4000/adduser');
 
   try {
     final response = await http.post(

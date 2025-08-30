@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:routetracking_flutter/data/notifiers.dart';
 import 'package:routetracking_flutter/pages/login_page.dart';
 
-void main() {
+Future<void> main() async {
+  //Load .env file
+  await dotenv.load(fileName: ".env");
+
   runApp(const MainApp());
 }
 
